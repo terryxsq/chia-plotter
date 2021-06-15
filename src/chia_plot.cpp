@@ -166,11 +166,13 @@ int main(int argc, char** argv)
 	std::string tmp_dir2;
 	std::string final_dir;
 	int num_plots = 1;
+	int k_size = 32;
 	int num_threads = 4;
 	int num_buckets = 256;
 	
 	options.allow_unrecognised_options().add_options()(
 		"n, count", "Number of plots to create (default = 1, -1 = infinite)", cxxopts::value<int>(num_plots))(
+		"k, ksize", "K size (default = 32)", cxxopts::value<int>(k_size))(
 		"r, threads", "Number of threads (default = 4)", cxxopts::value<int>(num_threads))(
 		"u, buckets", "Number of buckets (default = 256)", cxxopts::value<int>(num_buckets))(
 		"t, tmpdir", "Temporary directory, needs ~220 GiB (default = $PWD)", cxxopts::value<std::string>(tmp_dir))(
