@@ -59,6 +59,7 @@ phase4::output_t create_plot(	const int num_threads,
 								const int log_num_buckets,
 								const vector<uint8_t>& pool_key_bytes,
 								const vector<uint8_t>& farmer_key_bytes,
+			     					const int k_size,
 								const std::string& tmp_dir,
 								const std::string& tmp_dir_2)
 {
@@ -86,7 +87,7 @@ phase4::output_t create_plot(	const int num_threads,
 	std::cout << "Pool Public Key:   " << bls::Util::HexStr(pool_key.Serialize()) << std::endl;
 	std::cout << "Farmer Public Key: " << bls::Util::HexStr(farmer_key.Serialize()) << std::endl;
 	
-	vector<uint8_t> seed(32);
+	vector<uint8_t> seed(k_size);
 	randombytes_buf(seed.data(), seed.size());
 	
 	bls::AugSchemeMPL MPL;
@@ -349,7 +350,7 @@ int main(int argc, char** argv)
 			break;
 		}
 		std::cout << "Crafting plot " << i+1 << " out of " << num_plots << std::endl;
-		const auto out = create_plot(num_threads, log_num_buckets, pool_key, farmer_key, tmp_dir, tmp_dir2);
+		const auto out = create_plot(num_threads, log_num_buckets, pool_key, farmer_key, k_size, tmp_dir, tmp_dir2);
 		
 		if(final_dir != tmp_dir)
 		{
