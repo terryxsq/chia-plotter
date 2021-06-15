@@ -87,6 +87,7 @@ phase4::output_t create_plot(	const int num_threads,
 	std::cout << "Pool Public Key:   " << bls::Util::HexStr(pool_key.Serialize()) << std::endl;
 	std::cout << "Farmer Public Key: " << bls::Util::HexStr(farmer_key.Serialize()) << std::endl;
 	
+	std::cout << "K Size:            " << k_size << std::endl;
 	vector<uint8_t> seed(k_size);
 	randombytes_buf(seed.data(), seed.size());
 	
