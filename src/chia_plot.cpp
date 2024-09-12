@@ -59,6 +59,7 @@ phase4::output_t create_plot(	const int num_threads,
 								const int log_num_buckets,
 								const vector<uint8_t>& pool_key_bytes,
 								const vector<uint8_t>& farmer_key_bytes,
+			     					const int k_size,
 								const std::string& tmp_dir,
 								const std::string& tmp_dir_2)
 {
@@ -86,7 +87,8 @@ phase4::output_t create_plot(	const int num_threads,
 	std::cout << "Pool Public Key:   " << bls::Util::HexStr(pool_key.Serialize()) << std::endl;
 	std::cout << "Farmer Public Key: " << bls::Util::HexStr(farmer_key.Serialize()) << std::endl;
 	
-	vector<uint8_t> seed(32);
+	std::cout << "K Size:            " << k_size << std::endl;
+	vector<uint8_t> seed(k_size);
 	randombytes_buf(seed.data(), seed.size());
 	
 	bls::AugSchemeMPL MPL;
@@ -108,7 +110,7 @@ phase4::output_t create_plot(	const int num_threads,
 		}
 		bls::Util::Hash256(params.id.data(), bytes.data(), bytes.size());
 	}
-	const std::string plot_name = "plot-k32-" + get_date_string_ex("%Y-%m-%d-%H-%M")
+	const std::string plot_name = "plot-k" + std::to_string(k_size) + "-" + get_date_string_ex("%Y-%m-%d-%H-%M")
 			+ "-" + bls::Util::HexStr(params.id.data(), params.id.size());
 	
 	std::cout << "Working Directory:   " << (tmp_dir.empty() ? "$PWD" : tmp_dir) << std::endl;
@@ -166,11 +168,13 @@ int main(int argc, char** argv)
 	std::string tmp_dir2;
 	std::string final_dir;
 	int num_plots = 1;
+	int k_size = 32;
 	int num_threads = 4;
 	int num_buckets = 256;
 	
 	options.allow_unrecognised_options().add_options()(
 		"n, count", "Number of plots to create (default = 1, -1 = infinite)", cxxopts::value<int>(num_plots))(
+		"k, ksize", "K size (default = 32)", cxxopts::value<int>(k_size))(
 		"r, threads", "Number of threads (default = 4)", cxxopts::value<int>(num_threads))(
 		"u, buckets", "Number of buckets (default = 256)", cxxopts::value<int>(num_buckets))(
 		"t, tmpdir", "Temporary directory, needs ~220 GiB (default = $PWD)", cxxopts::value<std::string>(tmp_dir))(
@@ -347,7 +351,7 @@ int main(int argc, char** argv)
 			break;
 		}
 		std::cout << "Crafting plot " << i+1 << " out of " << num_plots << std::endl;
-		const auto out = create_plot(num_threads, log_num_buckets, pool_key, farmer_key, tmp_dir, tmp_dir2);
+		const auto out = create_plot(num_threads, log_num_buckets, pool_key, farmer_key, k_size, tmp_dir, tmp_dir2);
 		
 		if(final_dir != tmp_dir)
 		{
